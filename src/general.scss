@@ -1,0 +1,47 @@
+// general.scss
+@use "sass:color";
+@import "antd/dist/reset.css";
+
+// Variables
+$primary-color: #1677ff;
+$background-color: #f5f6fa;
+$text-color: #222;
+$font-family: "Inter", "Roboto", "Helvetica Neue", Arial, sans-serif;
+
+// Base
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: $font-family;
+  background-color: $background-color;
+  color: $text-color;
+  height: 100%;
+}
+
+#root { display: flex; flex-direction: column; min-height: 100vh; }
+
+.main-content { flex: 1; padding: 24px; }
+
+// Liens (utilise le module color)
+a {
+  color: $primary-color;
+  text-decoration: none;
+  transition: color 0.2s;
+
+  &:hover {
+    color: color.adjust($primary-color, $lightness: -10%);
+  }
+}
+
+// Overrides légers Ant Design
+.ant-layout { background: $background-color !important; }
+.ant-btn-primary {
+  background-color: $primary-color !important;
+  border-color: $primary-color !important;
+
+  &:hover,
+  &:focus {
+    background-color: color.adjust($primary-color, $lightness: -6%) !important;
+    border-color: color.adjust($primary-color, $lightness: -6%) !important;
+  }
+}
