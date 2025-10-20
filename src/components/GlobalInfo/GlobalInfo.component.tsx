@@ -1,5 +1,4 @@
 import { DatePicker, Form, Input, Select } from 'antd';
-import dayjs from "dayjs";
 
 interface GlobalInfoProps {
     onFormDataChange?: (data: any) => void;
