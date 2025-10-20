@@ -1,0 +1,72 @@
+name: CI & Deploy (Vite + gh-pages)
+
+on:
+  pull_request:
+    branches: [ main ]   # CI sur chaque PR vers main
+  push:
+    branches: [ main ]   # Déploie après merge sur main
+
+permissions:
+  contents: write        # nécessaire pour pousser sur gh-pages
+
+concurrency:
+  group: "ci-deploy"
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Build (PR)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      # (Optionnel) si tu as des tests :
+      # - name: Test
+      #   run: npm test -- --ci
+
+      # (Optionnel) publier l’artefact de build pour prévisualisation
+      - name: Upload build artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: vite-dist
+          path: dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event_name == 'push'   # uniquement après merge sur main
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish to gh-pages branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx gh-pages -d dist
