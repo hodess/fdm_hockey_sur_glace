@@ -2,16 +2,9 @@ import { useState } from "react";
 import { Layout, Typography } from "antd";
 import "./HeaderBar.component.scss";
 import PdfModal from "../../modal/previsualisation/PdfModal.component";
+import type { FormData } from "../../types";
 
 const { Header } = Layout;
-
-interface FormData {
-  datetime: any;
-  lieux: string;
-  sexe: string;
-  competition: string;
-  niveau: string;
-}
 
 interface HeaderBarProps {
   formData?: FormData;
@@ -19,7 +12,7 @@ interface HeaderBarProps {
 
 const HeaderBar = ({ formData }: HeaderBarProps) => {
   const [open, setOpen] = useState(false);
-  const pdfFile = "/feuille_de_match.pdf";
+  const pdfFile = `${import.meta.env.BASE_URL}feuille_de_match.pdf`;
 
   return (
     <Header className="header-bar">
@@ -32,16 +25,13 @@ const HeaderBar = ({ formData }: HeaderBarProps) => {
         </Typography.Text>
       </div>
 
-      <button
-        onClick={() => setOpen(true)}
-        className="pdf-button"
-      >
+      <button onClick={() => setOpen(true)} className="pdf-button">
         Voir le PDF
       </button>
-      <PdfModal 
-        open={open} 
-        onClose={() => setOpen(false)} 
-        file={pdfFile} 
+      <PdfModal
+        open={open}
+        onClose={() => setOpen(false)}
+        file={pdfFile}
         formData={formData}
       />
     </Header>

@@ -1,16 +1,9 @@
 import { Document, Page, pdfjs } from "react-pdf";
 import { useEffect } from "react";
 import Modal from "../Modal";
+import type { FormData } from "../../types";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
-
-interface FormData {
-  datetime: any;
-  lieux: string;
-  sexe: string;
-  competition: string;
-  niveau: string;
-}
 
 interface PdfModalProps {
   open: boolean;
@@ -19,11 +12,21 @@ interface PdfModalProps {
   formData?: FormData;
 }
 
-export default function PdfModal({ open, onClose, file, formData }: PdfModalProps) {
+export default function PdfModal({
+  open,
+  onClose,
+  file,
+  formData,
+}: PdfModalProps) {
   useEffect(() => {
     if (open && formData) {
       console.log("=== Données du formulaire GlobalInfo ===");
-      console.log("Date/Heure:", formData.datetime?.format ? formData.datetime.format("YYYY-MM-DD HH:mm") : formData.datetime);
+      console.log(
+        "Date/Heure:",
+        formData.datetime?.format
+          ? formData.datetime.format("YYYY-MM-DD HH:mm")
+          : formData.datetime,
+      );
       console.log("Lieux:", formData.lieux);
       console.log("Sexe:", formData.sexe);
       console.log("Compétition:", formData.competition);
@@ -35,8 +38,8 @@ export default function PdfModal({ open, onClose, file, formData }: PdfModalProp
   return (
     <Modal open={open} onClose={onClose} title="Prévisualisation PDF">
       <div className="pdf-container">
-        <Document 
-          file={file} 
+        <Document
+          file={file}
           loading={
             <div className="pdf-loading">
               <div className="spinner"></div>

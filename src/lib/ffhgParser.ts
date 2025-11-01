@@ -1,7 +1,9 @@
 // src/lib/ffhgParser.ts
 import * as pdfjsLib from "pdfjs-dist";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.mjs?worker&url";
-(pdfjsLib as any).GlobalWorkerOptions.workerSrc = pdfjsWorker;
+(
+  pdfjsLib as typeof pdfjsLib & { GlobalWorkerOptions: { workerSrc: string } }
+).GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 export type Player = {
   id: string;
@@ -23,7 +25,12 @@ export async function extractTextFromPDF(file: File): Promise<string> {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
     const text = content.items
-      .map((it: any) => ("str" in it ? it.str : ""))
+      .map((it) => {
+        if ("str" in it && typeof it.str === "string") {
+          return it.str;
+        }
+        return "";
+      })
       .join(" ")
       .replace(/\s{2,}/g, " ");
     all += text + "\n";
@@ -68,11 +75,15 @@ export function parseRosterFFHG(text: string): Player[] {
     const mLic = slice.match(/N[°o]\s*([0-9]{5,})/i);
     const licence = mLic?.[1];
 
-    const mBirth = slice.match(/Né\(e\)\s*le\s*([0-9]{2})\/([0-9]{2})\/([0-9]{4})/i);
+    const mBirth = slice.match(
+      /Né\(e\)\s*le\s*([0-9]{2})\/([0-9]{2})\/([0-9]{4})/i,
+    );
     const birthYear = mBirth ? parseInt(mBirth[3], 10) : undefined;
 
     players.push({
-      id: licence || `${indices[i].lastName}-${indices[i].firstName}-${Math.random().toString(36).slice(2)}`,
+      id:
+        licence ||
+        `${indices[i].lastName}-${indices[i].firstName}-${Math.random().toString(36).slice(2)}`,
       licence,
       firstName: indices[i].firstName,
       lastName: indices[i].lastName,

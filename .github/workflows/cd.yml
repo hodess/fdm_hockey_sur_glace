@@ -1,0 +1,45 @@
+name: CD (Deploy to GitHub Pages)
+
+on:
+  workflow_run:
+    workflows: ["CI (Lint & Build)"]
+    types:
+      - completed
+    branches:
+      - main
+
+permissions:
+  contents: write        # nécessaire pour pousser sur gh-pages
+
+concurrency:
+  group: "deploy"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish to gh-pages branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx gh-pages -d dist
+
