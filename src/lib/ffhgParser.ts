@@ -5,6 +5,8 @@ import pdfjsWorker from "pdfjs-dist/build/pdf.worker.mjs?worker&url";
   pdfjsLib as typeof pdfjsLib & { GlobalWorkerOptions: { workerSrc: string } }
 ).GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
+export type FilePlayersMap = Map<File, Player[]>;
+
 export type Player = {
   id: string;
   licence?: string;
@@ -97,4 +99,11 @@ export function parseRosterFFHG(text: string): Player[] {
 
 function toTitle(s: string) {
   return s.toLowerCase().replace(/\b([a-zà-öø-ÿ])/g, (x) => x.toUpperCase());
+}
+
+export function getTotalPlayers(filePlayersMap: FilePlayersMap) {
+  return Array.from(filePlayersMap.values()).reduce(
+    (acc, players) => acc + players.length,
+    0,
+  );
 }
