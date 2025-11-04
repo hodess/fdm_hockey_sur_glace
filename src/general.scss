@@ -18,7 +18,7 @@ html, body {
   height: 100%;
 }
 
-#root { display: flex; flex-direction: column; min-height: 100vh; }
+#root { min-height: 100vh; }
 
 .main-content { flex: 1; padding: 24px; }
 
