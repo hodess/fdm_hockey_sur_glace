@@ -1,0 +1,16 @@
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fafafa;
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin: 5px;
+    transition: background 0.2s ease;
+    max-width: fit-content;
+}
+  
+.file-item:hover {
+    background: #e6f7ff;
+}
+  

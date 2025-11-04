@@ -2,6 +2,7 @@ import "./HomePage.scss";
 import { useState } from "react";
 import HeaderBar from "../../components/HeaderBar/HeaderBar.component";
 import GlobalInfo from "../../components/GlobalInfo/GlobalInfo.component";
+import CreateTeamComponent from "../../components/create_team/create_team.component";
 import type { FormData } from "../../types";
 
 const HomePage = () => {
@@ -27,6 +28,10 @@ const HomePage = () => {
           <GlobalInfo onFormDataChange={handleFormDataChange} />
         </div>
       </main>
+      <div className="create-team">
+        <span>Importer une équipe</span>
+        <CreateTeamComponent />
+      </div>
     </>
   );
 };
