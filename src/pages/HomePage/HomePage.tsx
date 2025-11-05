@@ -19,7 +19,7 @@ const HomePage = () => {
   };
 
   return (
-    <>
+    <div className="home-page">
       <div className="header">
         <HeaderBar formData={formData} />
       </div>
@@ -32,7 +32,7 @@ const HomePage = () => {
         <span>Importer une équipe</span>
         <CreateTeamComponent />
       </div>
-    </>
+    </div>
   );
 };
 

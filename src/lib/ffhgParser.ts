@@ -102,8 +102,12 @@ function toTitle(s: string) {
 }
 
 export function getTotalPlayers(filePlayersMap: FilePlayersMap) {
-  return Array.from(filePlayersMap.values()).reduce(
-    (acc, players) => acc + players.length,
-    0,
+  const uniqueLicences = new Set(
+    Array.from(filePlayersMap.values())
+      .flat()
+      .map((player) => player.licence)
+      .filter((license): license is string => !!license),
   );
+
+  return uniqueLicences.size;
 }
