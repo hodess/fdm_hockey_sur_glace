@@ -1,7 +1,10 @@
+// src/components/PdfModal/index.tsx
 import { Document, Page, pdfjs } from "react-pdf";
-import { useEffect } from "react";
 import Modal from "../Modal";
 import type { FormData } from "../../types";
+import { getPdfTemplate } from "../../config/pdfTemplateMap";
+import type { CSSProperties } from "react";
+import { useMemo } from "react";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -18,26 +21,14 @@ export default function PdfModal({
   file,
   formData,
 }: PdfModalProps) {
-  useEffect(() => {
-    if (open && formData) {
-      console.log("=== Données du formulaire GlobalInfo ===");
-      console.log(
-        "Date/Heure:",
-        formData.datetime?.format
-          ? formData.datetime.format("YYYY-MM-DD HH:mm")
-          : formData.datetime,
-      );
-      console.log("Lieux:", formData.lieux);
-      console.log("Sexe:", formData.sexe);
-      console.log("Compétition:", formData.competition);
-      console.log("Niveau:", formData.niveau);
-      console.log("=====================================");
-    }
-  }, [open, formData]);
+  const template = useMemo(
+    () => (formData ? getPdfTemplate(formData) : null),
+    [formData],
+  );
 
   return (
     <Modal open={open} onClose={onClose} title="Prévisualisation PDF">
-      <div className="pdf-container">
+      <div className="pdf-container relative">
         <Document
           file={file}
           loading={
@@ -59,6 +50,39 @@ export default function PdfModal({
             className="pdf-page"
           />
         </Document>
+
+        {template && (
+          <div className="relative top-0 left-0 w-full h-full pointer-events-none">
+            {Object.entries(template)
+              .filter(([, field]) => field.active !== false)
+              .map(([name, field]) => {
+                const style: CSSProperties = {
+                  position: "absolute",
+                  top: `${800 - field.y}px`,
+                  left: `${field.x}px`,
+                  fontSize: field.fontSize,
+                  color: field.color ?? "black",
+                };
+
+                if (field.type === "circle") {
+                  style.width = field.circleWidth;
+                  style.height = 14;
+                  style.borderRadius = "9999px";
+                  style.border = "1px solid black";
+                  style.display = "flex";
+                  style.alignItems = "center";
+                  style.justifyContent = "center";
+                  return <div key={name} style={style}></div>;
+                }
+
+                return (
+                  <div key={field.text} style={style}>
+                    {field.text ?? ""}
+                  </div>
+                );
+              })}
+          </div>
+        )}
       </div>
     </Modal>
   );

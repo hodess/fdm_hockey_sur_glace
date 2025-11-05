@@ -10,7 +10,6 @@ export default function CreateTeamComponent() {
   );
 
   const handleParsedChange = (map: FilePlayersMap) => {
-    console.log("Map reçue depuis enfant :", map);
     setFilePlayersMap(map);
   };
 
