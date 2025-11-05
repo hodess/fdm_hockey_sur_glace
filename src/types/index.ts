@@ -7,3 +7,11 @@ export interface FormData {
   competition: string;
   niveau: string;
 }
+
+export function getSpecialFormatDateFromDatetime(
+  date: Dayjs,
+  Format: string,
+): string {
+  if (!date) return "";
+  return date.format(Format);
+}

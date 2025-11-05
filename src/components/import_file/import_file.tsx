@@ -37,8 +37,6 @@ export default function ImportFileComponent({
           onParsedChange?.(next);
           return next;
         });
-
-        console.log(players);
         message.success(`${file.name} importé avec succès`);
       } catch (err) {
         console.error(err);
